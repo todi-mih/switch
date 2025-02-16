@@ -1,0 +1,45 @@
+1 2 3
+# First ,I'd like to apologise for doing this in English,
+# I am a foreign student and my romanian is not the best.
+# To save you some time trying to decrypt it i did it in English,hope thats ok :).
+
+1)
+Very simple exercise,i literally just copy pasted the pseudocode from ocw,and modified it 
+for python(not a hard thing to do since its python),i just added the unicast function,which 
+what i found form the web a mac is unicast is its first byte last bit is 0,so i just applied and and
+with 1 to it(had to do sth similar in the iocla exam).
+
+2)
+I read what was asked in ocw and i followed the steps,also the lab helped.
+Global Variables:
+MAC_Table: Stores the mapping of MAC addresses to ports. This table is updated dynamically whenever a new frame is received.
+VLAN_Table: Maps each interface name to a specific VLAN ID based on the configuration file.
+Trunk_Ports: A set containing ports designated as trunk ports, allowing frames from multiple VLANs.
+This code supports VLANs by assigning VLAN IDs to each port and handling VLAN tagging on trunk and access ports.
+
+Functions:
+load_vlan_config(filename): Reads the switch configuration file to set the VLAN ID for each interface and identify trunk ports.
+forward_frame(interface, data, vlan_id): Handles frame tagging and untagging. If the frame is headed to a trunk port, it’s tagged if not already; if it’s on an access port with a matching VLAN ID, it’s stripped of the VLAN tag.
+
+Each port is assigned a VLAN ID from the configuration file , with ports labeled “T” set as trunk ports. Access ports only accept frames with their configured VLAN ID, isolating traffic between VLANs.
+On a trunk port, the frame is VLAN-tagged if not already tagged, while on an access port, the VLAN tag is removed if it matches the port's VLAN ID.
+
+3) 
+The STP implementation prevents loops by dynamically blocking and unblocking trunk ports based on BPDU messages.
+Classes and Functions:
+
+STPSwitch Class:
+Atributs:
+priority, own_bridge_id, root_bridge_id, root_path_cost: Used to manage the root bridge and track path costs.
+ports: Contains all trunk ports, each initialized in the blocking state to prevent loops initially.
+Funtionss:
+initialize_ports(trunk_ports, interfaces): Initializes trunk ports in the blocking state and sets them to designated if the switch is the root bridge.
+create_bpdu_frame(): Generates a BPDU frame with STP fields like root bridge ID and path cost.
+send_bpdu(): Sends BPDU frames periodically from the root bridge or when a better root bridge is discovered.
+process_bpdu(data, interface): Updates root bridge information based on received BPDU frames, recalculates costs, and adjusts port states.
+STP Process Flow:
+send_bpdu_every_sec: Sends BPDU frames from the root bridge every second to broadcast its status and detect loops.
+
+At initialization, the switch assumes it is the root bridge and broadcasts BPDU frames every second.
+If a BPDU with a lower bridge ID is received, process_bpdu updates the switch’s root bridge, path cost, and sets the best path to the root as the listening port.
+This setup prevents loops by blocking ports that would otherwise create redundant paths, allowing only the shortest path to the root. 
